@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={manrope.className}>{children}</body>
+        <body className={manrope.className} suppressHydrationWarning={true}>{children}</body>
       </html>
     </ClerkProvider>
   )
