@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     try {
         const { userId } = auth()
         const body = await request.json()
-        const { messages } = body
+        const { prompt, amount = 1, resolution = "512x512" } = body
 
         if (!userId) {
             return new NextResponse("Unauthorized", { status: 401 })
@@ -21,21 +21,28 @@ export async function POST(request: Request) {
             return new NextResponse("Missing configuration OpenAi ApiKey", { status: 500 })
         }
 
-        if (!messages) {
-            return new NextResponse("Missing message", { status: 400 })
+        if (!prompt) {
+            return new NextResponse("Missing prompt", { status: 400 })
         }
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4",
-            messages,
+        if (!amount) {
+            return new NextResponse("Missing amount", { status: 400 })
+        }
+
+        if (!resolution) {
+            return new NextResponse("Missing resolution", { status: 400 })
+        }
+
+        const response = await openai.images.generate({
+            
+            prompt,
+            n: parseInt(amount, 10),
+            size: resolution
         })
 
-        console.log(completion.choices);
-
-
-        return NextResponse.json(completion.choices[0].message)
+        return NextResponse.json(response.data)
     } catch (error) {
-        console.log("[CONVERSATION_ERROR]", error);
+        console.log("[IMAGE_ERROR]", error);
         return new NextResponse("Internal error", { status: 500 })
     }
 }
