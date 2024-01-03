@@ -106,14 +106,14 @@ const CodePage = () => {
                 className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg", message.role === "user" ? "bg-white border border-black/10" : "bg-muted")}
               >
                 {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <ReactMarkdown className="text-sm leading-5 text-gray-700 font-medium" components={{
+                <ReactMarkdown className="text-sm leading-6 text-gray-700 font-medium" components={{
                   pre: ({ node, ...props }) => (
                     <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
-                      <pre{...props} />
+                      <pre {...props} />
                     </div>
                   ),
                   code: ({ node, ...props }) => (
-                    <code className="p-1 rounded-lg" {...props} />
+                    <code className="bg-black/10 rounded-md py-1 px-2" {...props} />
                   )
                 }}>{message.content as string || ""}</ReactMarkdown>
               </div>
