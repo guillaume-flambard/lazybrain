@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.1",
@@ -26,6 +27,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.49.2",
     "react-markdown": "^9.0.1",
+    "replicate": "^0.25.2",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "vercel": "^33.0.1",
