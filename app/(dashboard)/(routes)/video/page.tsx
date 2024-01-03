@@ -14,9 +14,11 @@ import { useRouter } from "next/navigation"
 import axios from "axios"
 import { Empty } from "@/components/empty"
 import { Loader } from "@/components/loader"
+import { useProModal } from "@/hooks/use-pro-modal"
 
 const VideoPage = () => {
 
+  const proModal = useProModal()
   const [video, setVideo] = useState<string>()
   const router = useRouter()
 
@@ -35,13 +37,13 @@ const VideoPage = () => {
 
       const response = await axios.post("/api/video", data)
       
-      console.log(response.data);
-      
       setVideo(response.data[0])
       
       form.reset()
     } catch (error: any) {
-      console.log(error);
+      if (error?.response?.status === 403){
+        proModal.onOpen()
+      }
     } finally {
       router.refresh()
     }
