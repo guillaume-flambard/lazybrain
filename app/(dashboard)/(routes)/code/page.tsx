@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useState } from "react"
+import { useState } from "react"
 import Heading from "@/components/heading"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CodeIcon, MessageSquare } from "lucide-react"
