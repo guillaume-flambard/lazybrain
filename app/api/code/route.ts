@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessage } from "openai/resources/index.mjs";
 import { checkApiLimit, increaseApiLimit } from "@/lib/api.limit";
+import { checkUserSubscription } from "@/lib/subscription";
 
 
 const openai = new OpenAI({
@@ -33,8 +34,9 @@ export async function POST(request: Request) {
         }
 
         const freeTrial = await checkApiLimit()
+        const isPro = await checkUserSubscription()
 
-        if (!freeTrial) {
+        if (!freeTrial && !isPro) {
             return new NextResponse("Api limit reached", { status: 403 })
         }
 
@@ -43,7 +45,9 @@ export async function POST(request: Request) {
             messages : [...messages, instructionMessage]
         })
 
-        await increaseApiLimit()
+        if (!isPro){
+            await increaseApiLimit()
+        }
 
         return NextResponse.json(completion.choices[0].message)
     } catch (error) {

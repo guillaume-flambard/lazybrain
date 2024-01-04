@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+import axios from "axios"
 import { useProModal } from "@/hooks/use-pro-modal"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 import { Badge } from "./ui/badge"
@@ -45,6 +47,21 @@ export const ProModal = () => {
 
     const proModal = useProModal()
 
+    const [loading, setLoading] = useState(false)
+
+    const onSubscribe = async () => {
+        try {
+            setLoading(true)
+            const response = await axios.get("/api/stripe")
+
+            window.location.href = response.data.url
+        } catch (error) {
+            console.log(error, "STRIPE_CLIENT_ERROR")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <Dialog open={proModal.isOpen} onOpenChange={proModal.onClose} >
             <DialogContent>
@@ -72,7 +89,7 @@ export const ProModal = () => {
                             </Card>
                         ))}
                         <DialogFooter>
-                            <Button variant={"premium"} size={"lg"} className="group w-full hover:transition hover:scale-[1.02] hover:bg-gradient-to-r from-blue-200 via-indigo-500 to-emerald-500 ">
+                            <Button disabled={loading} onClick={onSubscribe} variant={"premium"} size={"lg"} className="group w-full hover:transition hover:scale-[1.02] hover:bg-gradient-to-r from-blue-200 via-indigo-500 to-emerald-500 ">
                                 Upgrade <Zap className="w-4 h-4 ml-2 fill-white group-hover:animate-ping" />
                             </Button>
                         </DialogFooter>

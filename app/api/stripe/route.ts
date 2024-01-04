@@ -12,23 +12,23 @@ export async function GET(request: Request) {
         const { userId } = auth();
         const user = await currentUser();
 
-        if (!userId) {
+        if (!userId || !user) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const userSubscription = await prismadb.userSubscription.findFirst({
+        const userSubscription = await prismadb.userSubscription.findUnique({
             where: {
                 userId
             }
         })
 
         if (userSubscription && userSubscription.stripeCustomerId) {
-            const stripeSession = await stripe.checkout.sessions.create({
+            const stripeSession = await stripe.billingPortal.sessions.create({
                 customer: userSubscription.stripeCustomerId,
                 return_url: settingsUrl,
             })
 
-            return new NextResponse(JSON.stringify(stripeSession.url), { status: 200 });
+            return new NextResponse(JSON.stringify({url: stripeSession.url}));
         }
 
         const stripeSession = await stripe.checkout.sessions.create({
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
             payment_method_types: ["card"],
             mode: "subscription",
             billing_address_collection: "auto",
-            customer_email: user?.emailAddresses[0].emailAddress,
+            customer_email: user.emailAddresses[0].emailAddress,
             line_items: [
                 {
                     price_data: {
@@ -59,7 +59,7 @@ export async function GET(request: Request) {
             }
         })
 
-        return new NextResponse(JSON.stringify(stripeSession.url), { status: 200 });
+        return new NextResponse(JSON.stringify({url: stripeSession.url}));
 
     } catch (error) {
         console.log("[STRIPE_ERROR]", error);
