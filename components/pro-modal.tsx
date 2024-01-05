@@ -9,6 +9,7 @@ import { Check, Code, ImageIcon, MessageSquare, Music, Video, Zap } from "lucide
 import { Card } from "./ui/card"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
+import toast from "react-hot-toast"
 
 export const ProModal = () => {
 
@@ -56,7 +57,7 @@ export const ProModal = () => {
 
             window.location.href = response.data.url
         } catch (error) {
-            console.log(error, "STRIPE_CLIENT_ERROR")
+            toast.error("Something went wrong. Please try again.")
         } finally {
             setLoading(false)
         }

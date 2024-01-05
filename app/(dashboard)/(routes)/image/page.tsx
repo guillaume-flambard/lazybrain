@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Image from "next/image"
 import { Card, CardFooter } from "@/components/ui/card"
 import { useProModal } from "@/hooks/use-pro-modal"
+import toast from "react-hot-toast"
 
 const ImagePage = () => {
 
@@ -46,11 +47,13 @@ const ImagePage = () => {
       const urls = response.data.map((image: { url: string }) => image.url)
       setImages(urls)
       form.reset()
-      
+
     } catch (error: any) {
 
       if (error?.response?.status === 403) {
         proModal.onOpen()
+      } else {
+        toast.error("Something went wrong. Please try again later.")
       }
 
     } finally {
